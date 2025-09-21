@@ -1,6 +1,5 @@
 import { compareSync } from "bcryptjs";
 import User from "../model/user.model.js";
-import { creatingToken } from "../utils/generatingToken.js";
 import bcrypt from "bcryptjs";
 import SignupMail from "../nodeMailer/SignupMail.js";
 import LoginMail from "../nodeMailer/LoginMail.js";
@@ -29,8 +28,6 @@ const Signup = async (req, res) => {
     const newUser = new User({role, name, email, userName, password:hashPassword, google_id });
     await newUser.save();
 
-    // Creating a jwt token
-    creatingToken(userName, res);
 
     // sending welcome email
     SignupMail(email, name);
@@ -56,8 +53,6 @@ const NormalLogin = async (req, res) => {
         return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    // Creating a jwt token
-    creatingToken(userName, res);
 
     // sending login confirmation email
     LoginMail(user.email, user.name);
@@ -79,17 +74,9 @@ const GoogleLogin = async (req, res) => {
         return res.status(400).json({ error: "User does not exist" });
     }
 
-    // Creating a jwt token
-    creatingToken(user.userName, res);
 
     res.status(200).json({ userId: user._id, name: name, email: email });
 };
 
-const Logout = (req, res) => {
-    res.cookie("jwt", "", {
-        maxAge: 1
-    });
-    res.status(200).json({ message: "Logged out successfully" });
-};
 
-export { Signup, NormalLogin, GoogleLogin, Logout };
+export { Signup, NormalLogin, GoogleLogin };
