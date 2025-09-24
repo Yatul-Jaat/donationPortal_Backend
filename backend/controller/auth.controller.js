@@ -57,7 +57,7 @@ const NormalLogin = async (req, res) => {
     // sending login confirmation email
     LoginMail(user.email, user.name);
 
-    res.status(200).json({ name: user.name, email: user.email });
+    res.status(200).json({userId:user._id, name: user.name, email: user.email });
 };
 
 const GoogleLogin = async (req, res) => {
